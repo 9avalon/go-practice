@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"time"
@@ -16,6 +17,7 @@ func timeHandler(format string) http.Handler {
 }
 
 func main() {
+	gin.New()
 	mux := http.NewServeMux()
 
 	th := timeHandler(time.RFC1123)
