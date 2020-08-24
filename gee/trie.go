@@ -1,10 +1,12 @@
 package gee
 
+import "strings"
+
 type Node struct {
-	pattern string // 待匹配路由，如 /p/:lang
-	part string // 路由中的一部分 如 :lange
+	pattern  string  // 待匹配路由，如 /p/:lang
+	part     string  // 路由中的一部分 如 :lange
 	children []*Node // 子节点
-	isWild bool // 是否精准匹配 yes:模糊匹配 /:lang
+	isWild   bool    // 是否精准匹配 yes:模糊匹配 /:lang
 }
 
 func (n *Node) matchChild(part string) *Node {
@@ -19,7 +21,7 @@ func (n *Node) matchChild(part string) *Node {
 func (n *Node) matchChildren(part string) []*Node {
 	nodes := make([]*Node, 0)
 	for _, child := range n.children {
-		if child.part == part {
+		if child.part == part || child.isWild {
 			nodes = append(nodes, child)
 		}
 	}
@@ -41,3 +43,24 @@ func (n *Node) insert(pattern string, parts []string, height int) {
 	child.insert(pattern, parts, height+1)
 }
 
+func (n *Node) search(parts []string, height int) *Node {
+	// 尾巴节点或者part的节点是*
+	if len(parts) == height || strings.HasPrefix(n.part, "*") {
+		if n.pattern == "" {
+			return nil
+		}
+		return n
+	}
+
+	part := parts[height]
+	children := n.matchChildren(part)
+
+	for _, child := range children {
+		result := child.search(parts, height+1)
+		if result != nil {
+			return result
+		}
+	}
+
+	return nil
+}

@@ -21,5 +21,9 @@ func main() {
 		c.String(http.StatusOK, "%s good", "very")
 	})
 
+	engine.GET("/like/:name", func(c *gee.Context) {
+		c.String(http.StatusOK, ":name is %s", c.Param("name"))
+	})
+
 	_ = engine.Run(":8080")
 }
