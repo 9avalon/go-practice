@@ -1,8 +1,12 @@
 package service
 
-import "go-practice/integration"
+import (
+	"go-practice/integration"
+)
 
 var BindCardService IBindCardService
+
+//var _ IBindCardService = (*BindCardServiceImpl)(nil)
 
 type BindCardReq struct {
 	BankCardName string
